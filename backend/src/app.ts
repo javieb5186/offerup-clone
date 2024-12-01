@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import mysql from "mysql2/promise";
+import { pool } from "./utils/db";
 
 // import authRoutes from './routes/auth';
 
@@ -13,17 +13,6 @@ const app: Application = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT),
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
 
 (async () => {
   try {
@@ -48,3 +37,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+export default app;
