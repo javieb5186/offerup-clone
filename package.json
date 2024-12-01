@@ -1,0 +1,32 @@
+{
+  "name": "offerup",
+  "version": "1.0.0",
+  "description": "OfferUp Clone is a platform for individuals to buy and sell personal items locally. It features real-time messaging, user-friendly post management, and location-based search to simplify community commerce.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "npm run preview --prefix frontend",
+    "start:backend": "npm run start --prefix backend",
+    "test": "jest",
+    "test:frontend": "jest --config frontend/jest.config.js",
+    "test:backend": "jest --config backend/jest.config.js",
+    "install-all": "npm install --prefix frontend && npm install --prefix backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "concurrently": "^9.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5"
+  }
+}
