@@ -1,19 +1,19 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-import { pool } from "./utils/db";
-
-// import authRoutes from './routes/auth';
-
-// Load environment variables
 dotenv.config();
+
+import cors from "cors";
+import { pool, executeSQLFile } from "./utils/db";
+import router from "./routes/auth";
 
 const app: Application = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// Test MySQL connection
 (async () => {
   try {
     const connection = await pool.getConnection();
@@ -24,8 +24,13 @@ app.use(cors());
   }
 })();
 
+// Create user table if it does not exist
+executeSQLFile("../models/users.sql").catch(() =>
+  console.log("error creating user table")
+);
+
 // Routes
-// app.use('/api/auth', authRoutes);
+app.use("/api/auth", router);
 
 // Root endpoint
 app.get("/", (req: Request, res: Response) => {

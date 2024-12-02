@@ -1,11 +1,16 @@
 import request from "supertest";
 import app from "../app";
+import { query } from "../utils/db";
 
 describe("POST /api/auth/signup", () => {
+  beforeAll(async () => {
+    await query("DELETE FROM users WHERE email = ?", ["john.doe@test.com"]);
+  });
+
   it("should create a new user and return a token", async () => {
     const newUser = {
-      fullname: "John Doe",
-      email: "john.doe@example.com",
+      name: "John Doe",
+      email: "john.doe@test.com",
       password: "johnisgreat",
     };
 
@@ -18,8 +23,8 @@ describe("POST /api/auth/signup", () => {
 
   it("should return an error if user already exists", async () => {
     const existingUser = {
-      fullname: "John Doe",
-      email: "john.doe@example.com",
+      name: "John Doe",
+      email: "john.doe@test.com",
       password: "johnisgreat",
     };
     const response = await request(app)
