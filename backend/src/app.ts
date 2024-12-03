@@ -1,30 +1,19 @@
 import express, { Application, Request, Response } from "express";
 import dotenv from "dotenv";
-import cors from "cors";
-import mysql from "mysql2/promise";
-
-// import authRoutes from './routes/auth';
-
-// Load environment variables
 dotenv.config();
+
+import cors from "cors";
+import { pool, executeSQLFile } from "./utils/db";
+import router from "./routes/auth";
 
 const app: Application = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT),
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
-
+// Test MySQL connection
 (async () => {
   try {
     const connection = await pool.getConnection();
@@ -35,8 +24,13 @@ const pool = mysql.createPool({
   }
 })();
 
+// Create user table if it does not exist
+executeSQLFile("../models/users.sql").catch(() =>
+  console.log("error creating user table")
+);
+
 // Routes
-// app.use('/api/auth', authRoutes);
+app.use("/api/auth", router);
 
 // Root endpoint
 app.get("/", (req: Request, res: Response) => {
@@ -48,3 +42,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+export default app;
