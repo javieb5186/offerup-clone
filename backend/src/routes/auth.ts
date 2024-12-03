@@ -49,10 +49,10 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
           expiresIn: 60 * 5,
         });
 
-        res.status(201).json({ message: "User created successfully" });
+        res.status(201).json({ message: "User created successfully", token });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).json({ message: "Error creating user", error });
     }
   }
