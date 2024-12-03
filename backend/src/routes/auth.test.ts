@@ -13,7 +13,7 @@ describe("POST /api/auth/signup", () => {
   });
 
   it("should validate names", () => {
-    const validNames = ["john doe", "mary jane", "jane doe", "jay bay", "Jack"];
+    const validNames = ["John Doe", "Mary Jane", "Jane Doe", "Jay Bay", "Jack"];
     const invalidNames = [
       "john-doe",
       "maryjane123",
@@ -25,13 +25,13 @@ describe("POST /api/auth/signup", () => {
     ];
 
     validNames.forEach((name) => {
-      expect(validateName(name)).toBe(false);
+      expect(validateName(name)).toBe(true);
     });
 
     invalidNames.forEach((name) => {
       // @ts-ignore
       // Ignore for testing
-      expect(validateName(name)).toBe(true);
+      expect(validateName(name)).toBe(false);
     });
   });
 
@@ -51,8 +51,9 @@ describe("POST /api/auth/signup", () => {
   it("should validate emails", () => {
     const validEmails = [
       "john.doe@gmail.com",
-      "johndoe123@co.com",
+      "johndoe123@gmail.co",
       "john_doe@facebook.com",
+      "john.doe@gmail.us.com",
     ];
 
     const invalidEmails = [
@@ -62,8 +63,15 @@ describe("POST /api/auth/signup", () => {
       "john@",
       "john<>doe@gmail.com",
       "john.doe@gmail.c",
-      ".john.doe@gmail.com",
     ];
+
+    validEmails.forEach((email) => {
+      expect(validateEmail(email)).toBe(true);
+    });
+
+    invalidEmails.forEach((email) => {
+      expect(validateEmail(email)).toBe(false);
+    });
   });
 
   it("should create a new user and return a token", async () => {

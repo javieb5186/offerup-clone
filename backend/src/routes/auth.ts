@@ -3,6 +3,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { query } from "../utils/db";
 import { Users } from "../types/Users";
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+} from "../utils/validators";
 
 const router = express.Router();
 
@@ -11,8 +16,14 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
   const { name, email, password } = req.body;
   let invalid = false;
 
+  !validateName(name) && (invalid = true);
+  !validateEmail(email) && (invalid = true);
+  !validatePassword(password) && (invalid = true);
+
   if (invalid) {
-    res.status(400).json({ message: "Invalid" });
+    res.status(400).json({
+      message: "Invalid, please check your name, email, and password.",
+    });
   } else {
     try {
       // Check if user exists
@@ -38,7 +49,7 @@ router.post("/signup", async (req: Request, res: Response): Promise<void> => {
           expiresIn: 60 * 5,
         });
 
-        res.status(201).json({ message: "User created successfully", token });
+        res.status(201).json({ message: "User created successfully" });
       }
     } catch (error) {
       console.log(error);
